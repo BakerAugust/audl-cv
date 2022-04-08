@@ -1,0 +1,9 @@
+data/*
+!data/possession_to_video
+!data/possession_to_video/*
+
+data/youtube/*
+!data/youtube
+!data/youtube/youtube_urls.csv
+
+*.wheels

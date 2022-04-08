@@ -6,4 +6,8 @@ data/youtube/*
 !data/youtube
 !data/youtube/youtube_urls.csv
 
+!data/all_games.txt
+
 *.wheels
+
+*__pycache__

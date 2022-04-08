@@ -1,0 +1,14 @@
+possession_number,home,start_time,end_time,is_quality,notes
+1,True,485,556,True,changes camera angle during final throw
+2,False,610,624,True,bad angle first throw
+3,True,625,776,False,timeout after event 2
+4,False,833,900,False,Foul mid point at 14:20 then they switch angles
+5,True,955,1022,False,foul mid point and some adjustments of camera angles..annotation looks off spatially
+6,False,1079,1091,True,
+7,True,1155,1181,True, some occlussion right at the end
+8,False,1232,1267,False, Bad camera angle to start
+9,True,1357,1393,True, Bad camera angle first throw some bad annotations
+10,False,1407,1597,False, Timeout midway and bad camera angles
+11,True,1611,1677,True, Bad angle for first 5s 
+12,False,1738,1786,True, missing first throw
+13,True,1848,1907,True,Foul in the middle with changed camera

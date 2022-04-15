@@ -1,4 +1,3 @@
-from typing import Any, Tuple
 import audl_advanced_stats as audl
 import pandas as pd
 from pathlib import Path
@@ -10,6 +9,7 @@ YOUTUBE_FILE = "youtube/youtube_urls.csv"
 YOUTUBE_DIR = "youtube"
 POSSESSION_TO_VIDEO_DIR = "possession_to_video"
 POSSESSSION_CLIPS_DIR = "possession_clips"
+POSSESSSION_ANNOTATIONS_DIR = "possession_annotations"
 
 
 class Game(audl.Game):
@@ -84,13 +84,47 @@ class Game(audl.Game):
             .drop(columns=["index"])
             .copy()
         )
+        # Re-label first event
+        df.loc[df["event"] == 1, "event_name"] = "Start of Possession"
+        df.loc[df["event"] == 1, "t"] = 0
+
+        # Draw possession if there's data, otherwise draw a blank field
+        last_row = df.loc[df["event"] == df["event"].max()].iloc[0].copy()
+
+        # Add row for last event
+        df = df.append(
+            pd.Series(
+                {
+                    "x": last_row["x_after"],
+                    "y": last_row["y_after"],
+                    "t": last_row["t_after"],
+                    "yyards_raw": last_row["yyards_raw"],
+                    "xyards_raw": last_row["xyards_raw"],
+                    "yards_raw": last_row["yards_raw"],
+                    "play_description": last_row["play_description"],
+                    "event_name": last_row["event_name_after"],
+                    "event": last_row["event"] + 1,
+                    "r": last_row["r_after"],
+                }
+            ),
+            ignore_index=True,
+        )
 
         return df
 
-    def clip_possession(self, possession_number: int) -> str:
+    def make_clip_path(
+        self, possession_number: int, starttime: int, endtime: int
+    ) -> str:
+        return f"{self.data_path}/{POSSESSSION_CLIPS_DIR}/{self.get_game_name()}-{str(possession_number)}-{str(starttime)}-{str(endtime)}.mp4"
+
+    def make_clip_annotation_path(
+        self, possession_number: int, starttime: int, endtime: int
+    ) -> str:
+        return f"{self.data_path}/{POSSESSSION_ANNOTATIONS_DIR}/{self.get_game_name()}-{str(possession_number)}-{str(starttime)}-{str(endtime)}.feather"
+
+    def load_possession_to_video(self) -> pd.DataFrame:
         """
-        Trys to clip full game by possession. Raises errors if the game is not yet downloaded or
-        possession_to_video annotations cannot be found.
+        Load file that provides video start/end times for each possession.
         """
         if not Path(self.youtube_file).is_file():
             raise FileExistsError(
@@ -108,12 +142,18 @@ class Game(audl.Game):
             )
 
         # Try to load possession_to_video
-        poss_to_vid = pd.read_csv(
-            self.possession_to_video_path, index_col="possession_number"
-        )
-        starttime = poss_to_vid.loc[possession_number, "start_time"]
-        endtime = poss_to_vid.loc[possession_number, "end_time"]
-        save_file = f"{self.data_path}/{POSSESSSION_CLIPS_DIR}/{self.get_game_name()}-{str(possession_number)}-{str(starttime)}-{str(endtime)}.mp4"
+        return pd.read_csv(self.possession_to_video_path, index_col="possession_number")
+
+    def clip_possession(self, possession_number: int) -> str:
+        """
+        Trys to clip full game by possession. Raises errors if the game is not yet downloaded or
+        possession_to_video annotations cannot be found.
+        """
+        poss_to_vid = self.load_possession_to_video()
+
+        starttime = poss_to_vid.loc[possession_number, "starttime"]
+        endtime = poss_to_vid.loc[possession_number, "endtime"]
+        save_file = self.make_clip_path(possession_number, starttime, endtime)
 
         if Path(save_file).is_file():
             pass
@@ -123,3 +163,38 @@ class Game(audl.Game):
             )
 
         return save_file
+
+    def load_annotation(self, possession_number: int) -> pd.DataFrame:
+        """
+        Tries to read annotation file.
+        """
+        poss_to_vid = self.load_possession_to_video()
+        starttime = poss_to_vid.loc[possession_number, "starttime"]
+        endtime = poss_to_vid.loc[possession_number, "endtime"]
+        path = self.make_clip_annotation_path(possession_number, starttime, endtime)
+
+        return pd.read_feather(path)
+
+    def annotated_clips(self) -> pd.DataFrame:
+        """
+        Returns a dataframe of which clips are downloaded with annotations.
+
+        Clips the possessions if not done already.
+        """
+        poss_to_vid = self.load_possession_to_video()
+        out = []
+        for possession in poss_to_vid.itertuples():
+            if possession.is_quality:
+                clip_path = self.clip_possession(possession.Index)
+                annotation_path = self.make_clip_annotation_path(
+                    possession.Index, possession.starttime, possession.endtime
+                )
+                out.append(
+                    {
+                        "possession_number": possession.Index,
+                        "clip_path": clip_path,
+                        "has_annotation": Path(annotation_path).is_file(),
+                    }
+                )
+
+        return pd.DataFrame(out)

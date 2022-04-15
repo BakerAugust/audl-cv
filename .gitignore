@@ -6,6 +6,9 @@ data/youtube/*
 !data/youtube
 !data/youtube/youtube_urls.csv
 
+!data/possession_annotations
+!data/possession_annotations/*
+
 !data/all_games.txt
 
 *.wheels

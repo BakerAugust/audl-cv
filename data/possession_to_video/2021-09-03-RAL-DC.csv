@@ -1,4 +1,4 @@
-possession_number,home,start_time,end_time,is_quality,notes
+possession_number,home,starttime,endtime,is_quality,notes
 1,True,485,556,True,changes camera angle during final throw
 2,False,610,624,True,bad angle first throw
 3,True,625,776,False,timeout after event 2

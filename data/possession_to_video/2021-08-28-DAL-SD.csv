@@ -1,0 +1,25 @@
+possession_number,home,starttime,endtime,is_quality,notes
+1,True,672,693,True,
+2,False,745,830,True,Foul midway
+3,True,841,853,True,Condensed--called timeout
+4,False,1042,1062,True,turnover
+5,True,1064,1098,True,Foul
+6,False,1156,1180,True,
+7,True,1234,1255,True,
+8,False,1309,1353,True,foul
+9,True,1406,1421,True, bad angle first throw
+10,False,1477,1522,True,
+11,True,1523,1534,True,
+12,False,1603,1635,False,Bad angle to start
+13,True,1689,1719,True,
+14,False,1770,1834,False,Bad angle for awhile at beginning
+15,True,1892,1926,False,Bad angle first throw--foul
+16,False,1983,2027,False,Bad angle first throw
+17,True,2027,2037,True,
+18,False,2096,2209,True,several fouls
+19,True,2240,2247,False,end of q
+20,False,2438,2450,True,huckaway
+21,True,2461,2509,False,foul
+22,False,2516,2562,True,foul-bad annotations
+23,True,2564,2580,False,thrown oob
+24,False,2581,2594,True,lots of clutter at beginning

@@ -55,11 +55,35 @@ class AnnotationGUI:
         # Make it look like a field
         axs[1].set_xlim(-26.65, 26.65)
         axs[1].set_ylim(0, 120)
-        axs[1].axhline(0, color="black", linewidth=1)
-        axs[1].axhline(20, color="black", linewidth=1)
-        axs[1].axhline(60, color="black", linewidth=1)
-        axs[1].axhline(100, color="black", linewidth=1)
-        axs[1].axhline(120, color="black", linewidth=1)
+        axs[1].get_yaxis().set_visible(False)
+        axs[1].get_xaxis().set_visible(False)
+        # major hlines
+        for x in [0, 20, 60, 100, 120]:
+            axs[1].axhline(x, color="black", linewidth=1)
+        # minor hlines
+        for x in [
+            5,
+            10,
+            15,
+            25,
+            30,
+            35,
+            40,
+            45,
+            50,
+            55,
+            65,
+            70,
+            75,
+            80,
+            85,
+            90,
+            95,
+            105,
+            110,
+            115,
+        ]:
+            axs[1].axhline(x, color="grey", linewidth=0.5)
 
         cap = cv2.VideoCapture(self.clip_path)
         im = axs[0].imshow([[0, 0], [0, 0]], aspect="auto")

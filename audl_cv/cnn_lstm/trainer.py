@@ -7,6 +7,7 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 from torch.optim import AdamW
+from torch.optim.lr_scheduler import StepLR
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -58,6 +59,7 @@ class Trainer:
         ]
         
         self.optimizer = AdamW(optimized_params, lr=0.001)
+        self.lr_scheduler = StepLR(self.optimizer, step_size=1, gamma=0.1)
     
     def run_train(self, run_name, n_epochs):
         best_val_loss = self.run_validation()

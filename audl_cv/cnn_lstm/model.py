@@ -7,7 +7,7 @@ class CNNLSTM(nn.Module):
     def __init__(self, pretrained_encoder, params):
         super(CNNLSTM, self).__init__()
         self.encoder = pretrained_encoder
-        self.lstm = nn.LSTM(input_size=40960,
+        self.lstm = nn.LSTM(input_size=20480,
                             hidden_size=params['hidden_size'],
                             num_layers=params['num_layers'],
                             batch_first=True,

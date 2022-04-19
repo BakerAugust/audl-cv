@@ -47,7 +47,7 @@ class AUDLDataset(Dataset):
             clip_path = path.replace('annotations', 'clips') + '.mp4'
             
             annotation = pd.read_feather(annotation_path)
-            label = annotation[['x', 'y']].to_numpy()
+            label = annotation[['x', 'y']].to_numpy(dtype=np.float32)
             
             frames = set(annotation['frame_number'].tolist())
             video = cv2.VideoCapture(clip_path)
@@ -57,7 +57,7 @@ class AUDLDataset(Dataset):
             
             while success:
                 if i_frame in frames:
-                    image = cv2.resize(image, (640, 640))
+                    image = cv2.resize(image, (128, 128))
                     frame_out.append(self.preprocess(image))
                 i_frame += 1
                 success, image = video.read()
@@ -108,7 +108,10 @@ if __name__ == '__main__':
     
     for i, sample in enumerate(dataloader):
         print(sample[0].shape)
+        print(sample[0].dtype)
         print(sample[1].shape)
+        print(sample[1].dtype)
+
     
     # clip_path = path.replace('annotations', 'clips') + '.mp4'    
     # video = cv2.VideoCapture(clip_path)

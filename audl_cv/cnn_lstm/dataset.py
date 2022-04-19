@@ -21,8 +21,8 @@ class AUDLDataset(Dataset):
                 std=[0.229, 0.224, 0.225]
             )
         ])
-        # paths = self._get_paths(data_path)
-        paths = [data_path]
+        paths = self._get_paths(data_path)
+        # paths = [data_path]
         self.clips, self.labels = self._get_data(paths)
         self.n_samples = len(self.clips)
         
@@ -43,10 +43,10 @@ class AUDLDataset(Dataset):
         
         for path in tqdm(paths):
             path = os.path.join(*path.split('\\'))
-            annotation_path = path + '.feather'
-            clip_path = path.replace('annotations', 'clips') + '.mp4'
+            # annotation_path = path + '.feather'
+            clip_path = path.replace('annotations', 'clips').replace('.feather', '.mp4')
             
-            annotation = pd.read_feather(annotation_path)
+            annotation = pd.read_feather(path)
             label = annotation[['x', 'y']].to_numpy(dtype=np.float32)
             
             frames = set(annotation['frame_number'].tolist())
@@ -101,16 +101,18 @@ if __name__ == '__main__':
     print('hello world')
     from torch.utils.data import DataLoader
     
-    path = 'data\possession_annotations\\2021-08-28-DAL-SD-1-672-693'
+    path = 'data'
     
     dataset = AUDLDataset(None, path)
     dataloader = DataLoader(dataset, batch_size=2, shuffle=False, collate_fn=dataset.collate_fn)
     
     for i, sample in enumerate(dataloader):
+        if i == 10: break
         print(sample[0].shape)
         print(sample[0].dtype)
         print(sample[1].shape)
         print(sample[1].dtype)
+        print('====')
 
     
     # clip_path = path.replace('annotations', 'clips') + '.mp4'    

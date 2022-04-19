@@ -3,6 +3,7 @@ import pandas as pd
 import cv2
 import os
 import numpy as np
+import glob
 
 import torch
 import torchvision.transforms as T
@@ -23,19 +24,25 @@ class AUDLDataset(Dataset):
         ])
         # paths = self._get_paths(data_path)
         paths = [data_path]
-        print('bb')
         self.clips, self.labels = self._get_data(paths)
-        print('cc')
         self.n_samples = len(self.clips)
         
     def _get_paths(self, data_path):
-        return None
+        annotation_path = data_path.split('\\') + ['possession_annotations', '*.feather']
+        annotation_path = os.path.join(*annotation_path)
+        
+        annotations = []
+        
+        for file in glob.glob(annotation_path):
+            annotations.append(file)
+            
+        return annotations
     
     def _get_data(self, paths):
         clips = []
         labels = []
         
-        for path in paths:
+        for path in tqdm(paths):
             path = os.path.join(*path.split('\\'))
             annotation_path = path + '.feather'
             clip_path = path.replace('annotations', 'clips') + '.mp4'

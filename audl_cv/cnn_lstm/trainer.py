@@ -25,7 +25,7 @@ class Trainer:
         self._get_optimizer()
 
     def set_seed(self):
-        self.seed = int(self.config['general']['seed'])
+        self.seed = 123
         torch.manual_seed(self.seed)
         random.seed(self.seed)
         np.random.seed(self.seed)

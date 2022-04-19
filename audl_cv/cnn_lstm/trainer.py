@@ -16,9 +16,8 @@ logger.setLevel(logging.INFO)
 class Trainer:
     def __init__(self, model, train_dataset, dev_dataset=None):
         self.model = model
-        self.train_dataset = train_dataset
-        if dev_dataset is not None:
-            self.dev_dataset = dev_dataset
+        if not dev_dataset:
+            dev_dataset = train_dataset
             
         self.set_seed()
         self._get_dataloader(train_dataset, dev_dataset)
@@ -32,14 +31,14 @@ class Trainer:
         
     def _get_dataloader(self, train_dataset, dev_dataset):
         self.train_loader = DataLoader(train_dataset,
-                                batch_size=16,
-                                collate_fn=self.train_dataset.collate_fn,
+                                batch_size=2,
+                                collate_fn=train_dataset.collate_fn,
                                 shuffle=True,
                                 drop_last=True
                                 )
         self.dev_loader = DataLoader(dev_dataset,
-                                batch_size=16,
-                                collate_fn=self.dev_dataset.collate_fn,
+                                batch_size=2,
+                                collate_fn=dev_dataset.collate_fn,
                                 shuffle=False,
                                 drop_last=False
                                 )

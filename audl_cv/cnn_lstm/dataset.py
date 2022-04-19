@@ -14,7 +14,6 @@ class AUDLDataset(Dataset):
     def __init__(self, config, data_path):
         self.config = config
         self.clip_length = 200
-        print('aaa')
         self.preprocess = T.Compose([
             T.ToTensor(),
             T.Normalize(

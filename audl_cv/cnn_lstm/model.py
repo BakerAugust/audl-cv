@@ -26,11 +26,9 @@ class CNNLSTM(nn.Module):
     
     def forward(self, batch, return_type='loss'):
         if return_type == 'loss':
-            bs, seq_len, h, w, c = batch[0].size()
-            reshaped_img = torch.reshape(batch[0], (bs*seq_len, h, w, c))
+            bs, seq_len, c, h, w = batch[0].size()
+            reshaped_img = torch.reshape(batch[0], (bs*seq_len, c, h, w))
             # print('1', reshaped_img.size())
-            reshaped_img = torch.permute(reshaped_img, (0, 3, 1, 2))
-            # print('2', reshaped_img.size())
             img_embedding = self.encoder(reshaped_img)
             # print('3', img_embedding.size())
             _, emb_1, emb_2, emb_3 = img_embedding.size()

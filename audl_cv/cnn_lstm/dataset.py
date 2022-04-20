@@ -35,7 +35,7 @@ class AUDLDataset(Dataset):
         for file in glob.glob(annotation_path):
             annotations.append(file)
             
-        return annotations
+        return annotations[:3]
     
     def _get_data(self, paths):
         clips = []
@@ -104,8 +104,8 @@ if __name__ == '__main__':
     path = 'data'
     
     dataset = AUDLDataset(None, path)
-    dataloader = DataLoader(dataset, batch_size=2, shuffle=False, collate_fn=dataset.collate_fn)
-    
+    dataloader = DataLoader(dataset, batch_size=2, shuffle=True, collate_fn=dataset.collate_fn)
+    print(dataset.n_samples)
     for i, sample in enumerate(dataloader):
         if i == 10: break
         print(sample[0].shape)

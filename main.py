@@ -18,7 +18,7 @@ if __name__ == '__main__':
         'dropout': 0.25
     }
     device = torch.device('cuda' if torch.cuda.is_available else 'cpu')
-    data_path = 'data\possession_annotations\\2021-08-28-DAL-SD-1-672-693'
+    data_path = 'data'
     
     
     model = CNNLSTM(encoder, params)

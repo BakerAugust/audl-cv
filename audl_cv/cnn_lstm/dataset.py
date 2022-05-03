@@ -13,7 +13,7 @@ from torch.nn.utils.rnn import pad_sequence
 class AUDLDataset(Dataset):
     def __init__(self, config, data_path):
         self.config = config
-        self.clip_length = 200
+        self.clip_length = 80
         self.preprocess = T.Compose([
             T.ToTensor(),
             T.Normalize(
@@ -96,12 +96,11 @@ class AUDLDataset(Dataset):
         
         return clips, labels
             
-        
 if __name__ == '__main__':
     print('hello world')
     from torch.utils.data import DataLoader
     
-    path = 'data'
+    path = 'data\\val'
     
     dataset = AUDLDataset(None, path)
     dataloader = DataLoader(dataset, batch_size=2, shuffle=True, collate_fn=dataset.collate_fn)

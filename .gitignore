@@ -16,3 +16,4 @@ data/youtube/*
 *__pycache__
 
 launch.json
+*.pt

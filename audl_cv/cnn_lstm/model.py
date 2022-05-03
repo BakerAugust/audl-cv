@@ -25,23 +25,25 @@ class CNNLSTM(nn.Module):
         return F.mse_loss(preds, labels)
     
     def forward(self, batch, return_type='loss'):
+        bs, seq_len, c, h, w = batch[0].size()
+        reshaped_img = torch.reshape(batch[0], (bs*seq_len, c, h, w))
+        # print('1', reshaped_img.size())
+        img_embedding = self.encoder(reshaped_img)
+        # print('3', img_embedding.size())
+        _, emb_1, emb_2, emb_3 = img_embedding.size()
+        img_embedding = torch.reshape(img_embedding, (bs, seq_len, emb_1, emb_2, emb_3))
+        # print('4', img_embedding.size())
+        img_embedding = torch.flatten(img_embedding, start_dim=2)
+        # print('5', img_embedding.size())
+        lstm_out, _ = self.lstm(img_embedding)
+        # print('6', lstm_out.size())
+        preds = self.linear_out(lstm_out)
+        # print(preds.size())
+        
         if return_type == 'loss':
-            bs, seq_len, c, h, w = batch[0].size()
-            reshaped_img = torch.reshape(batch[0], (bs*seq_len, c, h, w))
-            # print('1', reshaped_img.size())
-            img_embedding = self.encoder(reshaped_img)
-            # print('3', img_embedding.size())
-            _, emb_1, emb_2, emb_3 = img_embedding.size()
-            img_embedding = torch.reshape(img_embedding, (bs, seq_len, emb_1, emb_2, emb_3))
-            # print('4', img_embedding.size())
-            img_embedding = torch.flatten(img_embedding, start_dim=2)
-            # print('5', img_embedding.size())
-            lstm_out, _ = self.lstm(img_embedding)
-            # print('6', lstm_out.size())
-            preds = self.linear_out(lstm_out)
-            # print(preds.size())
-
             return self.loss_fn(preds, batch[1])
+        elif return_type == 'preds':
+            return preds
         
 if __name__ == '__main__':
     encoder = models.mnasnet1_0(pretrained=True)

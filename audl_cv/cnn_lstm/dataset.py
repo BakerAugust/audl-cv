@@ -35,7 +35,7 @@ class AUDLDataset(Dataset):
         for file in glob.glob(annotation_path):
             annotations.append(file)
             
-        return annotations[:3]
+        return annotations
     
     def _get_data(self, paths):
         clips = []

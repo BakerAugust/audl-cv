@@ -18,11 +18,13 @@ if __name__ == '__main__':
         'dropout': 0.25
     }
     device = torch.device('cuda' if torch.cuda.is_available else 'cpu')
-    data_path = 'data'
+    train_path = 'data\\train'
+    val_path = 'data\\val'
     
     
     model = CNNLSTM(encoder, params)
-    dataset = AUDLDataset(None, data_path)
-    trainer = Trainer(model, dataset)
+    train_dataset = AUDLDataset(None, train_path)
+    val_dataset = AUDLDataset(None, val_path)
+    trainer = Trainer(model, train_dataset, val_dataset)
     
     trainer.run_train('initial_run', 5)

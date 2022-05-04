@@ -11,9 +11,7 @@ data/youtube/*
 
 !data/all_games.txt
 
-*.wheels
-
-*__pycache__
 
 launch.json
 *.pt
+*__pycache__

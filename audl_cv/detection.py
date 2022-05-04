@@ -2,7 +2,7 @@ import torch
 import torchvision
 import cv2
 
-INPUT = "data/possession_clips/2021-09-03-RAL-DC-12-1738-1786.mp4"
+INPUT = "data/possession_clips/2021-08-20-BOS-NY-1-1835-1862.mp4"
 
 cap = cv2.VideoCapture(INPUT)
 model = torch.hub.load("ultralytics/yolov5", "yolov5s", pretrained=True)

@@ -91,7 +91,8 @@ class Trainer:
                 torch.save(self.model.state_dict(), ckpt_path)
                 logger.info(f'New checkpoint saved at {ckpt_path}')
                 
-            if (val_loss >= best_val_loss) and self.model.frozen == True:
+            elif self.model.frozen == True:
+                logger.info(f' Unfreezing model')
                 self.model.frozen = False
                 for g in self.optimizer.param_groups:
                     g['lr'] = 0.0003

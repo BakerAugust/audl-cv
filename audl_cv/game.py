@@ -5,11 +5,12 @@ from pytube import YouTube
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 
 
-YOUTUBE_FILE = "youtube/youtube_urls.csv"
-YOUTUBE_DIR = "youtube"
-POSSESSION_TO_VIDEO_DIR = "possession_to_video"
-POSSESSSION_CLIPS_DIR = "possession_clips"
-POSSESSSION_ANNOTATIONS_DIR = "possession_annotations"
+YOUTUBE_FILE = Path("youtube/youtube_urls.csv")
+YOUTUBE_DIR = Path("youtube")
+POSSESSION_TO_VIDEO_DIR = Path("possession_to_video/")
+POSSESSSION_CLIPS_DIR = Path("possession_clips/")
+POSSESSSION_ANNOTATIONS_DIR = Path("possession_annotations/")
+HOMOGRAPHY_ANNOTATIONS_DIR = Path("homography_annotations/")
 
 
 class Game(audl.Game):
@@ -22,7 +23,7 @@ class Game(audl.Game):
         game_url,
         youtube_url=None,
         year=audl.constants.CURRENT_YEAR,
-        data_path="data",
+        data_path=Path("data/"),
         upload=False,
         download=False,
     ):
@@ -33,14 +34,14 @@ class Game(audl.Game):
         if not youtube_url:
             # Try to get from file
             youtube_urls = pd.read_csv(
-                f"{self.data_path}/{YOUTUBE_FILE}", index_col="external_game_id"
+                self.data_path / YOUTUBE_FILE, index_col="external_game_id"
             )
             youtube_url = youtube_urls.loc[self.get_game_name(), "url"]
 
         self.youtube_url = youtube_url
-        self.youtube_file = f"{self.data_path}/{YOUTUBE_DIR}/{self.get_game_name()}.mp4"
+        self.youtube_file = self.data_path / YOUTUBE_DIR / f"{self.get_game_name()}.mp4"
         self.possession_to_video_path = (
-            f"{self.data_path}/{POSSESSION_TO_VIDEO_DIR}/{self.get_game_name()}.csv"
+            self.data_path / POSSESSION_TO_VIDEO_DIR / f"{self.get_game_name()}.csv"
         )
 
     def download_video(self, override: bool = False) -> None:
@@ -115,12 +116,30 @@ class Game(audl.Game):
     def make_clip_path(
         self, possession_number: int, starttime: int, endtime: int
     ) -> str:
-        return f"{self.data_path}/{POSSESSSION_CLIPS_DIR}/{self.get_game_name()}-{str(possession_number)}-{str(starttime)}-{str(endtime)}.mp4"
+        return (
+            self.data_path
+            / POSSESSSION_CLIPS_DIR
+            / f"{self.get_game_name()}-{str(possession_number)}-{str(starttime)}-{str(endtime)}.mp4"
+        )
 
     def make_clip_annotation_path(
         self, possession_number: int, starttime: int, endtime: int
     ) -> str:
-        return f"{self.data_path}/{POSSESSSION_ANNOTATIONS_DIR}/{self.get_game_name()}-{str(possession_number)}-{str(starttime)}-{str(endtime)}.feather"
+        return (
+            self.data_path
+            / POSSESSSION_ANNOTATIONS_DIR
+            / "{self.get_game_name()}-{str(possession_number)}-{str(starttime)}-{str(endtime)}.feather"
+        )
+
+    def make_homography_annotation_path(self) -> str:
+        """
+        Make path for homography annotations
+        """
+        return (
+            self.data_path
+            / HOMOGRAPHY_ANNOTATIONS_DIR
+            / f"{self.get_game_name()}.feather"
+        )
 
     def load_possession_to_video(self) -> pd.DataFrame:
         """

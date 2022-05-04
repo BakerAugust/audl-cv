@@ -1,6 +1,7 @@
 import os
 from sklearn import model_selection
 from tqdm import tqdm
+import json
 import logging
 import random
 import numpy as np
@@ -45,6 +46,7 @@ class Inference:
         self.model.eval()
         preds, golds = [], []
         total_loss = 0
+        out = []
         
         for i, batch in enumerate(pbar):
             inputs = batch[0].to(self.model.device())
@@ -52,14 +54,19 @@ class Inference:
             batch = (inputs, labels)
             
             pred = self.model(batch, return_type='preds')
-            preds.append(pred)
-            golds.append(labels)
-            loss = torch.sqrt(F.mse_loss(pred, labels))
-            loss = loss / inputs.size(1)
+            out.append({
+                'preds': pred.cpu().numpy().tolist(),
+                'labels': labels.cpu().numpy().tolist()
+                })
+            # loss = torch.sqrt(F.mse_loss(pred, labels))
+            loss = F.l1_loss(pred, labels)
             total_loss += loss
         
         test_loss = total_loss / len(self.loader)        
-        logger.info(f' Test set RMSE: {test_loss:4f}')
+        logger.info(f' Test set MAE: {test_loss:4f}')
+        
+        # with open('predpred.json', 'w') as f:
+        #     json.dump(out, f)
         
 if __name__ == '__main__':
     print('hello world')    

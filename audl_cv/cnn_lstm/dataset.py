@@ -57,7 +57,7 @@ class AUDLDataset(Dataset):
             
             while success:
                 if i_frame in frames:
-                    image = cv2.resize(image, (128, 128))
+                    image = cv2.resize(image, (224, 224))
                     frame_out.append(self.preprocess(image))
                 i_frame += 1
                 success, image = video.read()

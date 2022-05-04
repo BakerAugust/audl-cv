@@ -7,7 +7,7 @@ class CNNLSTM(nn.Module):
     def __init__(self, pretrained_encoder, params):
         super(CNNLSTM, self).__init__()
         self.encoder = pretrained_encoder
-        self.lstm = nn.LSTM(input_size=20480,
+        self.lstm = nn.LSTM(input_size=62720,
                             hidden_size=params['hidden_size'],
                             num_layers=params['num_layers'],
                             batch_first=True,
@@ -57,8 +57,8 @@ if __name__ == '__main__':
     device = 'cpu'
     
     model = CNNLSTM(new_encoder, params)
-    batch = (torch.ones(4, 200, 120, 240, 3, device=device), 
-             torch.ones(4, 200, 2, device=device))
+    batch = (torch.ones(4, 80, 3, 224, 224, device=device), 
+             torch.ones(4, 80, 2, device=device))
     model.to(device)
     
     loss = model(batch)
